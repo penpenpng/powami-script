@@ -9,10 +9,10 @@
 
 ```
 > pip install -r requirements.txt
-> pws script.pws [arg]
+> rpws script.pws [arg]
 ```
 
-で実行します。 `pws` は Windows 向けのヘルパーです。Mac や Linux をお使いの方は同等のものを自作するか、単に `python ./src/pws.py <arg>` してください。
+で実行します。 `rpws` は Windows 向けのヘルパーです。Mac や Linux をお使いの方は同等のものを自作するか、単に `python -m pws script.pws <arg>` してください。
 
 
 # サンプルコード

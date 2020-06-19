@@ -5,10 +5,18 @@ import sys
 import re
 
 
-def run_script(script: str, arg: str = ""):
-    script = re.sub(r"[^ぽわ！？～ーっ]", "", script)
-    arg = re.sub(r"[^ぽわ！？～ー]", "", arg)
+def sanitize_input(arg):
+    return re.sub(r"[^ぽわ！？～ー]", "", arg)
 
+
+def sanitize_script(script):
+    script = re.sub(r"/\*[^/]*\*/", "", script, re.S)
+    return re.sub(r"[^ぽわ！？～ーっ]", "", script)
+
+
+def run_script(script: str, arg: str = ""):
+    arg = sanitize_input(arg)
+    script = sanitize_script(script)
     code = parse(script)
 
     return Env.run(code, arg)
