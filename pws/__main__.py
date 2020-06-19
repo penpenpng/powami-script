@@ -6,10 +6,12 @@ import re
 
 
 def sanitize_input(arg):
+    arg = re.sub(r"〜", "～", arg)
     return re.sub(r"[^ぽわ！？～ー]", "", arg)
 
 
 def sanitize_script(script):
+    script = re.sub(r"〜", "～", script)
     script = re.sub(r"/\*[^/]*\*/", "", script, re.S)
     return re.sub(r"[^ぽわ！？～ーっ]", "", script)
 
