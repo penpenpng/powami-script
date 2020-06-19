@@ -135,11 +135,12 @@ yacc.yacc()
 
 def run(script: str, arg: str = ""):
     script = re.sub(r"[^ぽわ！？～ーっ]", "", script)
+    arg = re.sub(r"[^ぽわ！？～ー]", "", arg)
 
     yacc.parse(script)
     Env.init(arg)
     globals()["pws_result"].run()
 
     if Env.err:
-        return "ぽわみ"
+        return "ぽ……？"
     return Env.out()

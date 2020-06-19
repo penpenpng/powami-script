@@ -34,6 +34,8 @@ class Script:
 
     def run(self):
         for s in self.scripts:
+            if Env.err:
+                return
             s.run()
 
 
@@ -43,6 +45,9 @@ class Assignment:
         self.literal = literal
 
     def run(self):
+        if Env.err:
+            return
+
         Env.vars[self.var] = self.literal
 
 
@@ -54,6 +59,9 @@ class ControlStatement:
         self.script = script
 
     def run(self):
+        if Env.err:
+            return
+
         negated = self.keyword in (Token.NOT_IF, Token.NOT_WHILE)
 
         if self.pattern == "～":
@@ -63,9 +71,9 @@ class ControlStatement:
             regex = re.sub(r"！～", "@2", regex)
             regex = re.sub(r"！ー", "@3", regex)
             regex = re.sub(r"！！", "@4", regex)
-            regex = re.sub(r"？", "[ぽわ@1@2@3@4]", regex)
-            regex = re.sub(r"～", "?", regex)
-            regex = re.sub(r"ー", "[ぽわ@1@2@3@4]+", regex)
+            regex = re.sub(r"ー", "[ぽわ@1@2@3@4]", regex)
+            regex = re.sub(r"？", "?", regex)
+            regex = re.sub(r"～", "*", regex)
             regex = re.sub(r"@1", "？", regex)
             regex = re.sub(r"@2", "～", regex)
             regex = re.sub(r"@3", "ー", regex)
@@ -76,6 +84,7 @@ class ControlStatement:
                 try:
                     bl = bool(re.fullmatch(regex, Env.vars[self.var]))
                 except Exception:
+                    Env.err = True
                     return False
             else:
                 bl = Env.vars[self.var] == ""
@@ -94,7 +103,7 @@ class ControlStatement:
                 step += 1
                 if step > 1000:
                     Env.err = True
-                    break
+                    return
                 self.script.run()
         else:
             raise Exception
@@ -106,6 +115,9 @@ class FunctionCall(Script):
         self.args = args
 
     def run(self):
+        if Env.err:
+            return
+
         if len(self.args) == 1:
             x = self.args[0]
             xv = Env.vars[x]
