@@ -2,14 +2,23 @@ import re
 
 import ply.yacc as yacc
 
-from engine import Assignment, ControlStatement, Env, FunctionCall, Script
-from enums import Token
-from lex import tokens
+from .engine import Assignment, ControlStatement, FunctionCall, Script
+from .enums import Token
+from .lex import tokens
+
+
+last_eval = None
+
+
+def parse(script):
+    yacc.parse(script)
+    return last_eval
 
 
 def define_grammar(clause: str, grammar: str, delegate):
     def p_rule(p):
-        globals()["pws_result"] = p[0] = delegate(p)
+        global last_eval
+        last_eval = p[0] = delegate(p)
 
     grammar = "\n|".join(
         map(
@@ -131,16 +140,3 @@ define_grammar(
 )
 
 yacc.yacc()
-
-
-def run(script: str, arg: str = ""):
-    script = re.sub(r"[^ぽわ！？～ーっ]", "", script)
-    arg = re.sub(r"[^ぽわ！？～ー]", "", arg)
-
-    yacc.parse(script)
-    Env.init(arg)
-    globals()["pws_result"].run()
-
-    if Env.err:
-        return "ぽ……？"
-    return Env.out()

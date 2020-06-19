@@ -1,6 +1,6 @@
 import re
 
-from enums import Token
+from .enums import Token
 
 
 class Env:
@@ -8,8 +8,7 @@ class Env:
     err = False
 
     @classmethod
-    def init(cls, arg):
-        cls.err = False
+    def run(cls, code, arg):
         cls.vars = {
             "ぽ～わ": arg,
             "わ～ぽ": "",
@@ -22,9 +21,12 @@ class Env:
             "ぽぽわ": "",
             "ぽぽぽ": "ぽ",
         }
+        cls.err = False
 
-    @classmethod
-    def out(cls):
+        code.run()
+
+        if Env.err:
+            return "ぽ……？"
         return cls.vars["わ～ぽ"]
 
 

@@ -3,7 +3,7 @@ from typing import List
 import ply.lex as lex
 from ply.lex import Lexer
 
-from enums import Context, Token
+from .enums import Context, Token
 
 
 def define_token(
