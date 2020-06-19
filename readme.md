@@ -1,3 +1,5 @@
+![](https://github.com/penpenpng/powami-script/workflows/Test/badge.svg)
+
 # ぽわみスクリプト
 ぽわみスクリプトは人類と [ぽわみbot](https://twitter.com/powamibot) の対話のために生まれた言語です。
 
