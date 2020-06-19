@@ -55,14 +55,14 @@ class Test:
             result = pws.run_script(self.script, self.input)
             assert result == self.output
         except AssertionError:
-            self.exists_failure = True
+            Test.exists_failure = True
             print(f"""
 [FAILED] case {self.no} in {self.file} (Assertion Error)
 expected: {self.output}
 actual  : {result}
             """)
         except Exception:
-            self.exists_failure = True
+            Test.exists_failure = True
             print(f"[FAILED] case {self.no} in {self.file} (Syntax Error)")
         else:
             print(f"[passed] case {self.no} in {self.file}")
