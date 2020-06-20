@@ -16,17 +16,27 @@ def sanitize_script(script):
     return re.sub(r"[^ぽわ！？～ーっ]", "", script)
 
 
-def run_script(script: str, arg: str = ""):
+def run_script(
+    script: str,
+    arg: str = "",
+    max_step: int = 1000,
+    var_capacity: int = 1024
+):
     arg = sanitize_input(arg)
     script = sanitize_script(script)
     code = parse(script)
 
-    return Env.run(code, arg)
+    return Env.run(code, arg, max_step, var_capacity)
 
 
-def run_script_file(path, arg=""):
+def run_script_file(
+    path,
+    arg: str = "",
+    max_step: int = 1000,
+    var_capacity: int = 1024
+):
     with open(path, "r", encoding="utf_8") as f:
-        return run_script(f.read(), arg)
+        return run_script(f.read(), arg, max_step, var_capacity)
 
 
 if __name__ == "__main__":

@@ -5,10 +5,13 @@ from .enums import Token
 
 class Env:
     vars = {}
+    max_step = 1
+    var_capacity = 1
+    step = 0
     err = False
 
     @classmethod
-    def run(cls, code, arg):
+    def run(cls, code, arg, max_step=1000, var_capacity=1024):
         cls.vars = {
             "ぽ～わ": arg,
             "わ～ぽ": "",
@@ -21,7 +24,12 @@ class Env:
             "ぽぽわ": "",
             "ぽぽぽ": "ぽ",
         }
+        cls.max_step = max_step
+        cls.var_capacity = var_capacity
+        cls.step = 0
         cls.err = False
+
+        cls.audit_memory("ぽ～わ")
 
         code.run()
 
@@ -29,14 +37,32 @@ class Env:
             return "ぽ……？"
         return cls.vars["わ～ぽ"]
 
+    @classmethod
+    def audit_memory(cls, var):
+        cls.vars[var] = var[:cls.var_capacity]
+
+    @classmethod
+    def error(cls):
+        cls.err = True
+
+    @classmethod
+    def count_step(cls):
+        cls.step += 1
+
+    @classmethod
+    def should_exit(cls):
+        return cls.err or cls.step > cls.max_step
+
 
 class Script:
     def __init__(self, *scripts):
         self.scripts = scripts
 
     def run(self):
+        Env.count_step()
+
         for s in self.scripts:
-            if Env.err:
+            if Env.should_exit():
                 return
             s.run()
 
@@ -47,10 +73,12 @@ class Assignment:
         self.literal = literal
 
     def run(self):
-        if Env.err:
+        Env.count_step()
+        if Env.should_exit():
             return
 
         Env.vars[self.var] = self.literal
+        Env.audit_memory(self.var)
 
 
 class ControlStatement:
@@ -61,7 +89,8 @@ class ControlStatement:
         self.script = script
 
     def run(self):
-        if Env.err:
+        Env.count_step()
+        if Env.should_exit():
             return
 
         negated = self.keyword in (Token.NOT_IF, Token.NOT_WHILE)
@@ -100,11 +129,8 @@ class ControlStatement:
             if condition():
                 self.script.run()
         elif self.keyword in (Token.WHILE, Token.NOT_WHILE):
-            step = 0
             while condition():
-                step += 1
-                if step > 1000:
-                    Env.err = True
+                if Env.should_exit():
                     return
                 self.script.run()
         else:
@@ -117,7 +143,8 @@ class FunctionCall(Script):
         self.args = args
 
     def run(self):
-        if Env.err:
+        Env.count_step()
+        if Env.should_exit():
             return
 
         if len(self.args) == 1:
@@ -132,8 +159,10 @@ class FunctionCall(Script):
 
         if self.symbol is Token.PUSH_LEFT:
             Env.vars[x] = yv + xv
+            Env.audit_memory(x)
         elif self.symbol is Token.PUSH_RIGHT:
             Env.vars[x] = xv + yv
+            Env.audit_memory(x)
         elif self.symbol is Token.POP_LEFT:
             if len(xv) <= 0:
                 Env.vars[x] = ""
