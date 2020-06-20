@@ -4,14 +4,24 @@ import ply.yacc as yacc
 
 from .engine import Assignment, ControlStatement, FunctionCall, Script
 from .enums import Token
-from .lex import tokens
+from .lex import tokens, lexer
 
 
 last_eval = None
 
 
 def parse(script):
-    yacc.parse(script)
+    parser = yacc.yacc()
+
+    # parser.restart() is broken, so
+    sym = yacc.YaccSymbol()
+    sym.type = '$end'
+    parser.symstack = [sym]
+    parser.statestack = [0]
+    parser.state = None
+    parser.token = None
+
+    parser.parse(script, lexer=lexer)
     return last_eval
 
 
