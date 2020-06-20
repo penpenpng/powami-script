@@ -42,7 +42,7 @@ class Env:
 
     @classmethod
     def audit_memory(cls, var):
-        cls.vars[var] = var[:cls.var_capacity]
+        cls.vars[var] = cls.vars[var][:cls.var_capacity]
 
     @classmethod
     def error(cls):
@@ -54,7 +54,8 @@ class Env:
 
     @classmethod
     def should_exit(cls):
-        return cls.err or cls.step > cls.max_step
+        cls.err = cls.step > cls.max_step
+        return cls.err
 
 
 class Script:
