@@ -4,8 +4,8 @@ import ply.yacc as yacc
 
 from .engine import Assignment, ControlStatement, FunctionCall, Script
 from .enums import Token
-from .lex import tokens, lexer
-
+from .error import PwsSyntaxError
+from .lex import lexer, tokens
 
 last_eval = None
 
@@ -23,11 +23,6 @@ def parse(script):
 
     parser.parse(script, lexer=lexer)
     return last_eval
-
-
-class PwsSyntaxError(Exception):
-    def __init__(self, msg):
-        super().__init__(msg)
 
 
 def p_error(t):

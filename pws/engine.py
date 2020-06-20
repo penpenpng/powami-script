@@ -3,6 +3,9 @@ import re
 from .enums import Token
 
 
+ERROR_MESSAGE = "ぽ……？"
+
+
 class Env:
     vars = {}
     max_step = 1
@@ -34,7 +37,7 @@ class Env:
         code.run()
 
         if Env.err:
-            return "ぽ……？"
+            return ERROR_MESSAGE
         return cls.vars["わ～ぽ"]
 
     @classmethod

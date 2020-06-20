@@ -1,18 +1,9 @@
 import re
-import sys
 from glob import glob
 from pathlib import Path
 
+from .import_package import pws
 
-def import_pws():
-    import pws
-    return pws
-
-
-sys.path.append(
-    str(Path(__file__).resolve().parent.parent)
-)
-pws = import_pws()
 examples_dir = Path(__file__).parent.parent / "examples"
 
 
@@ -61,16 +52,22 @@ class Test:
 expected: {self.output}
 actual  : {result}
             """)
+        except pws.PwsSyntaxError as e:
+            Test.exists_failure = True
+            print(
+                f"[FAILED] case {self.no} in {self.file} (Syntax Error: {e})")
         except Exception:
             Test.exists_failure = True
-            print(f"[FAILED] case {self.no} in {self.file} (Syntax Error)")
+            print(f"[FAILED] case {self.no} in {self.file} (Unknown Error)")
         else:
             print(f"[passed] case {self.no} in {self.file}")
 
 
-def test_examples():
+def test():
+    Test.exists_failure = False
+
     for example in map(Path, glob(str(examples_dir / "*"))):
         for test in create_tests(example):
             test.do()
 
-    return 1 if Test.exists_failure else 0
+    return Test.exists_failure
