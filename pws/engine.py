@@ -14,7 +14,7 @@ class Env:
     err = False
 
     @classmethod
-    def run(cls, code, arg, max_step=1000, var_capacity=1024):
+    def run(cls, code, arg, max_step=100000, var_capacity=1024):
         cls.vars = {
             "ぽ～わ": arg,
             "わ～ぽ": "",
@@ -102,17 +102,17 @@ class ControlStatement:
         if self.pattern == "～":
             regex = None
         else:
-            regex = re.sub(r"！？", "@1", self.pattern)
-            regex = re.sub(r"！～", "@2", regex)
-            regex = re.sub(r"！ー", "@3", regex)
-            regex = re.sub(r"！！", "@4", regex)
+            regex = re.sub(r"！！", "@1", self.pattern)
+            regex = re.sub(r"！？", "@2", regex)
+            regex = re.sub(r"！～", "@3", regex)
+            regex = re.sub(r"！ー", "@4", regex)
             regex = re.sub(r"ー", "[ぽわ@1@2@3@4]", regex)
             regex = re.sub(r"？", "?", regex)
             regex = re.sub(r"～", "*", regex)
-            regex = re.sub(r"@1", "？", regex)
-            regex = re.sub(r"@2", "～", regex)
-            regex = re.sub(r"@3", "ー", regex)
-            regex = re.sub(r"@4", "！", regex)
+            regex = re.sub(r"@1", "！", regex)
+            regex = re.sub(r"@2", "？", regex)
+            regex = re.sub(r"@3", "～", regex)
+            regex = re.sub(r"@4", "ー", regex)
 
         def condition():
             if regex is not None:

@@ -19,7 +19,7 @@ def sanitize_script(script):
 def run_script(
     script: str,
     arg: str = "",
-    max_step: int = 1000,
+    max_step: int = 100000,
     var_capacity: int = 1024
 ):
     arg = sanitize_input(arg)
@@ -32,7 +32,7 @@ def run_script(
 def run_script_file(
     path,
     arg: str = "",
-    max_step: int = 1000,
+    max_step: int = 100000,
     var_capacity: int = 1024
 ):
     with open(path, "r", encoding="utf_8") as f:
