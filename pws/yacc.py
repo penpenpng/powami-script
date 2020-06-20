@@ -1,6 +1,7 @@
 import re
 
 import ply.yacc as yacc
+from ply.lex import LexError
 
 from .engine import Assignment, ControlStatement, FunctionCall, Script
 from .enums import Token
@@ -21,7 +22,11 @@ def parse(script):
     parser.state = None
     parser.token = None
 
-    parser.parse(script, lexer=lexer)
+    try:
+        parser.parse(script, lexer=lexer)
+    except LexError as e:
+        raise PwsSyntaxError(e)
+
     return last_eval
 
 
