@@ -25,6 +25,15 @@ def parse(script):
     return last_eval
 
 
+class PwsSyntaxError(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+
+
+def p_error(t):
+    raise PwsSyntaxError(t)
+
+
 def define_grammar(clause: str, grammar: str, delegate):
     def p_rule(p):
         global last_eval
